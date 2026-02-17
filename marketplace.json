@@ -1,0 +1,9 @@
+{
+  "name": "FarmAdvisor Claude Plugins",
+  "description": "A curated marketplace of Claude plugins for FarmAdvisor applications",
+  "version": "1.0.0",
+  "author": "IFC-NC",
+  "homepage": "https://github.com/IFC-NC/farmadvisor-claude-plugins",
+  "mcpServer": "https://ai.farmadvisor.com/mcp",
+  "plugins": []
+}
