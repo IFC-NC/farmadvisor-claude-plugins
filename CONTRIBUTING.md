@@ -21,8 +21,8 @@ mkdir plugins/my-awesome-plugin
 Your plugin directory must contain at minimum:
 
 - `plugin.json` - Plugin metadata and configuration (required)
-- `README.md` - Plugin documentation (required)
-- `icon.png` - Plugin icon (optional, but recommended)
+- `README.md` - Plugin documentation (recommended)
+- `icon.png` - Plugin icon (optional)
 
 ### 4. Plugin Metadata (plugin.json)
 
@@ -30,24 +30,24 @@ Create a `plugin.json` file with the following structure:
 
 ```json
 {
-  "id": "unique-plugin-id",
-  "name": "Your Plugin Name",
+  "id": "crop-monitor",
+  "name": "Crop Health Monitor",
   "version": "1.0.0",
-  "description": "A clear, concise description of what your plugin does",
+  "description": "Monitor and analyze crop health using satellite imagery and sensor data",
   "author": "Your Name or Organization",
   "homepage": "https://your-plugin-homepage.com",
-  "repository": "https://github.com/username/plugin-repo",
+  "repository": "https://github.com/username/crop-monitor",
   "capabilities": [
-    "list",
-    "of",
-    "capabilities"
+    "crop-monitoring",
+    "health-analysis",
+    "satellite-imagery"
   ],
-  "category": "agriculture|weather|data-analysis|integration|other",
+  "category": "agriculture",
   "tags": [
-    "relevant",
-    "tags",
-    "for",
-    "discovery"
+    "crops",
+    "monitoring",
+    "health-analysis",
+    "satellite"
   ],
   "mcpServer": "https://ai.farmadvisor.com/mcp"
 }

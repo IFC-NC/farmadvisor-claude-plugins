@@ -20,16 +20,16 @@ Each plugin must have a `plugin.json` file with the following structure:
 
 ```json
 {
-  "id": "unique-plugin-id",
-  "name": "Plugin Name",
+  "id": "weather-forecast",
+  "name": "Weather Forecast Plugin",
   "version": "1.0.0",
-  "description": "Brief description of what the plugin does",
+  "description": "Provides detailed weather forecasts for farm locations",
   "author": "Author Name",
-  "homepage": "https://github.com/username/plugin-repo",
-  "repository": "https://github.com/username/plugin-repo",
+  "homepage": "https://github.com/username/weather-forecast-plugin",
+  "repository": "https://github.com/username/weather-forecast-plugin",
   "capabilities": [
-    "capability1",
-    "capability2"
+    "weather-forecast",
+    "climate-data"
   ],
   "mcpServer": "https://ai.farmadvisor.com/mcp"
 }
