@@ -50,12 +50,18 @@ def validate_plugin(plugin_dir):
     with open(plugin_json, 'r') as f:
         plugin_data = json.load(f)
     
-    required_fields = ['id', 'name', 'version', 'description', 'author']
+    required_fields = ['id', 'name', 'version', 'description', 'author', 'mcpServer']
     for field in required_fields:
         if field not in plugin_data:
             errors.append(f"plugin.json: Missing required field '{field}'")
     
-    recommended_fields = ['homepage', 'repository', 'capabilities', 'entrypoint']
+    # Validate mcpServer value
+    if 'mcpServer' in plugin_data:
+        expected_mcp = 'https://ai.farmadvisor.com/mcp'
+        if plugin_data['mcpServer'] != expected_mcp:
+            errors.append(f"plugin.json: mcpServer must be '{expected_mcp}', got '{plugin_data['mcpServer']}'")
+    
+    recommended_fields = ['homepage', 'repository', 'capabilities']
     for field in recommended_fields:
         if field not in plugin_data:
             warnings.append(f"plugin.json: Missing recommended field '{field}'")

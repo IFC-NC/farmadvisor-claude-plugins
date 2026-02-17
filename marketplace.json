@@ -4,7 +4,6 @@
   "version": "1.0.0",
   "author": "IFC-NC",
   "homepage": "https://github.com/IFC-NC/farmadvisor-claude-plugins",
-  "plugins": [
-    "plugins/example-plugin"
-  ]
+  "mcpServer": "https://ai.farmadvisor.com/mcp",
+  "plugins": []
 }

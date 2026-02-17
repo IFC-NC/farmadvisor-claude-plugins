@@ -21,9 +21,7 @@ Browse the [plugins directory](./plugins) to discover available plugins. Each pl
 - Configuration instructions
 - API specifications
 
-### Example Plugins
-
-- **[Example Farm Data Plugin](./plugins/example-plugin)** - Demonstrates farm data integration with Claude
+All plugins in this marketplace use the FarmAdvisor MCP server at `https://ai.farmadvisor.com/mcp`.
 
 ## 🚀 Using Plugins
 

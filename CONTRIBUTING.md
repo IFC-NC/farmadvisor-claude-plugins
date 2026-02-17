@@ -49,13 +49,11 @@ Create a `plugin.json` file with the following structure:
     "for",
     "discovery"
   ],
-  "entrypoint": "https://your-plugin-api.com/endpoint",
-  "authentication": {
-    "type": "api_key|oauth|none",
-    "required": true
-  }
+  "mcpServer": "https://ai.farmadvisor.com/mcp"
 }
 ```
+
+**Important:** All plugins must use the FarmAdvisor MCP server at `https://ai.farmadvisor.com/mcp`. This is required for all plugins in this marketplace.
 
 ### 5. Plugin Documentation (README.md)
 
@@ -115,6 +113,7 @@ Before submitting, ensure:
 
 ### Technical Requirements
 
+- **All plugins must use the FarmAdvisor MCP server at `https://ai.farmadvisor.com/mcp`**
 - Plugin must be accessible via HTTPS
 - API endpoints must be stable and versioned
 - Must follow security best practices

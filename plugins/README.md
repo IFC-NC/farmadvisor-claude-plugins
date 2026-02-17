@@ -31,9 +31,11 @@ Each plugin must have a `plugin.json` file with the following structure:
     "capability1",
     "capability2"
   ],
-  "entrypoint": "https://plugin-url.com/api"
+  "mcpServer": "https://ai.farmadvisor.com/mcp"
 }
 ```
+
+**Note:** All plugins must use the FarmAdvisor MCP server at `https://ai.farmadvisor.com/mcp`.
 
 ## Adding a Plugin
 
