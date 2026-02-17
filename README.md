@@ -98,4 +98,4 @@ Check back regularly as we add more plugins to help you get the most out of Clau
 
 ---
 
-**Maintained by IFC-NC** | [GitHub](https://github.com/IFC-NC/farmadvisor-claude-plugins)
+[GitHub](https://github.com/IFC-NC/farmadvisor-claude-plugins)
