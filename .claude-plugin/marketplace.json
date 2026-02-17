@@ -1,0 +1,10 @@
+{
+  "name": "farmadvisor-claude-plugins",
+  "owner": {
+    "name": "IFC-NC"
+  },
+  "metadata": {
+    "description": "Marketplace for various FarmAdvisor Claude plugins"
+  },
+  "plugins": []
+}
