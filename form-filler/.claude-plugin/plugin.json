@@ -1,0 +1,8 @@
+{
+  "name": "form-filler",
+  "version": "1.0.0",
+  "description": "Fill out agriculture-related forms using data from FarmAdvisor organizations and properties.",
+  "author": {
+    "name": "IFC-NC"
+  }
+}

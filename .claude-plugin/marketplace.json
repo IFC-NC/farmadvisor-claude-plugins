@@ -1,0 +1,13 @@
+{
+  "name": "farmadvisor-plugins",
+  "owner": {
+    "name": "IFC-NC"
+  },
+  "plugins": [
+    {
+      "name": "form-filler",
+      "source": "./form-filler",
+      "description": "Fill out agriculture-related forms using data from FarmAdvisor organizations and properties. Automatically scopes to the user's organization, loads property data, and maps it to form fields."
+    }
+  ]
+}
