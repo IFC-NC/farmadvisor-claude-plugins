@@ -1,42 +1,22 @@
 | name | description |
 |------|-------------|
-| form-filling | Fill out agriculture-related forms using FarmAdvisor data. Automatically selects the user's organization, loads properties, and maps farm data to form fields. Trigger with "fill out this form", "help me complete this form", "fill this in with my farm data", or when a user uploads a form document. |
+| form-filling | Fill out agriculture-related forms using FarmAdvisor data. Guides the user through organization selection, property selection, and form source selection before filling. Trigger with "fill out this form", "help me complete this form", "fill this in with my farm data", or the /form-filler command. |
 
 # Form Filling
 
-Fill out agriculture-related forms by pulling organization and property data from FarmAdvisor. Works with PDFs, images, and documents.
+A guided, step-by-step process to fill agriculture-related PDF forms using data from FarmAdvisor.
 
-## How It Works
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│ FORM FILLER                                                     │
-├─────────────────────────────────────────────────────────────────┤
-│ STEP 1: Organization Selection                                  │
-│  ✓ Query user's profile and organization memberships            │
-│  ✓ Auto-select if only one org available                        │
-│  ✓ Auto-select default org if multiple available                │
-│  ✓ Allow user to switch organizations                           │
-├─────────────────────────────────────────────────────────────────┤
-│ STEP 2: Load Properties                                         │
-│  ✓ Fetch all active properties for the selected organization    │
-│  ✓ Include name, location, acreage, regions, boundaries         │
-│  ✓ Auto-select if only one property, otherwise ask user         │
-├─────────────────────────────────────────────────────────────────┤
-│ STEP 3: Fill the Form                                           │
-│  ✓ Analyze the uploaded form to identify fields                 │
-│  ✓ Map FarmAdvisor data to matching form fields                 │
-│  ✓ Present completed form for user review                       │
-└─────────────────────────────────────────────────────────────────┘
-```
+> **CRITICAL RULES — read before doing anything:**
+> 1. **Do NOT write your own code to read or fill PDFs.** A bundled script is provided at `${CLAUDE_PLUGIN_ROOT}/scripts/fill_pdf.py` — use it exclusively.
+> 2. **Use the FarmAdvisor MCP server tools directly** to execute GraphQL queries. The MCP server is already connected — use its `execute` tool.
+> 3. **This is an interactive flow.** Complete each step, present the results to the user, and **wait for their response** before moving to the next step. Do not skip ahead.
+> 4. **Return the filled PDF file to the user.** Do not just present text.
 
 ---
 
-## Execution Flow
+## Step 1: Select Organization
 
-### Step 1: Organization Selection
-
-Query the user's profile and organization memberships using the FarmAdvisor MCP server:
+Use the FarmAdvisor MCP server's `execute` tool to run this query:
 
 ```graphql
 {
@@ -66,14 +46,16 @@ Query the user's profile and organization memberships using the FarmAdvisor MCP 
 }
 ```
 
-**Selection logic:**
-- If there is **1** organization in `uto.nodes`: Auto-select it. Inform the user which organization was selected and proceed to Step 2.
-- If there are **multiple** organizations: Select the one where `isDefault` is `true`. Inform the user which organization was auto-selected (their default). If the user wants to switch, present the full list by name and let them choose. Proceed to Step 2.
-- If there are **0** organizations: Inform the user that no organizations are available and stop.
+**Present the results to the user:**
+- **1 organization**: Tell the user which organization was selected and proceed to Step 2.
+- **Multiple organizations**: List them all by name. Auto-select the one where `isDefault` is `true`, but ask the user to confirm or switch. **Wait for their response.**
+- **0 organizations**: Tell the user no organizations are available and stop.
 
-### Step 2: Load Properties
+---
 
-Once an organization is selected, load the properties. Use the selected organization's `id` as the `$orgId` variable:
+## Step 2: Select Property
+
+Use the FarmAdvisor MCP server's `execute` tool to run this query, substituting the selected organization's `id`:
 
 ```graphql
 query GetProperties($orgId: String, $excludeDisabled: Boolean) {
@@ -116,18 +98,125 @@ query GetProperties($orgId: String, $excludeDisabled: Boolean) {
 }
 ```
 
-**Variables:**
-- `$orgId`: The `id` of the selected organization
-- `$excludeDisabled`: Set to `true` to exclude disabled properties
+**Variables:** `$orgId` = selected organization ID, `$excludeDisabled` = `true`
 
-**Property selection:**
-- If **1** property: Auto-select it.
-- If **multiple** properties: Ask the user which property (or properties) the form relates to.
-- If **0** properties: Inform the user no properties were found for this organization.
+**Present the results to the user:**
+- **1 property**: Tell the user which property was selected and proceed to Step 3.
+- **Multiple properties**: List them all (name, location, acres). Ask the user to pick one. **Wait for their response.**
+- **0 properties**: Tell the user no properties were found for this organization and stop.
 
-### Step 3: Fill the Form
+---
 
-With organization and property data loaded, analyze the uploaded form and map FarmAdvisor data to the appropriate fields.
+## Step 3: Select Form Source
+
+Ask the user how they want to provide the form:
+
+> **How would you like to provide the form to fill?**
+> 1. **Upload a file** — Upload your own PDF form
+> 2. **Use a file from FarmAdvisor** — Choose from files stored in your organization or property
+
+**Wait for the user's response.**
+
+### Option A: User uploads a file
+
+If the user chooses to upload, ask them to upload their PDF. Once uploaded, proceed to Step 4.
+
+### Option B: Use a file from FarmAdvisor
+
+Query available files from both the organization and the selected property.
+
+**Organization PDF templates:**
+
+```graphql
+query GetOrgTemplates($orgId: String!) {
+  organization(id: $orgId) {
+    pdfTemplate {
+      templateFiles {
+        key
+        name
+        url
+      }
+    }
+  }
+}
+```
+
+**Organization files** (PDFs only — filter by name containing `.pdf`):
+
+```graphql
+query GetOrgFiles($orgId: String!) {
+  organization(id: $orgId) {
+    organizationFiles(
+      filter: {
+        isFolder: { equalTo: false }
+        name: { includesInsensitive: ".pdf" }
+      }
+      orderBy: [NAME_ASC]
+    ) {
+      nodes {
+        key
+        name
+        presignedUrl
+        createdAt
+      }
+    }
+  }
+}
+```
+
+**Property files** (PDFs only):
+
+```graphql
+query GetPropertyFiles($propertyId: BigInt!) {
+  property(id: $propertyId) {
+    propertyFiles(
+      filter: {
+        isFolder: { equalTo: false }
+        name: { includesInsensitive: ".pdf" }
+      }
+      orderBy: [NAME_ASC]
+    ) {
+      nodes {
+        key
+        name
+        presignedUrl
+        createdAt
+      }
+    }
+  }
+}
+```
+
+**Present all available files to the user**, grouped by source:
+- **Templates** (from `pdfTemplate.templateFiles`)
+- **Organization Files** (from `organizationFiles`)
+- **Property Files** (from `propertyFiles`)
+
+Ask the user to pick one. **Wait for their response.**
+
+Once selected, download the file using its `presignedUrl` (or `url` for templates):
+
+```bash
+curl -sL -o /tmp/form.pdf "<presigned_url>"
+```
+
+Proceed to Step 4 with the downloaded file.
+
+---
+
+## Step 4: Fill the Form
+
+### 4a. List the PDF's form fields
+
+```bash
+python "${CLAUDE_PLUGIN_ROOT}/scripts/fill_pdf.py" --list-fields /path/to/form.pdf
+```
+
+This outputs a JSON list of all fillable AcroForm fields with their names, types, and current values.
+
+### 4b. Map FarmAdvisor data to field names
+
+Look at the PDF visually to understand what each field represents, then match AcroForm field names to FarmAdvisor data.
 
 **Common field mappings:**
 
@@ -142,16 +231,33 @@ With organization and property data loaded, analyze the uploaded form and map Fa
 | GPS Coordinates | `property.centroid.geojson` |
 | Farm Boundary | `property.surveyBoundary.geojson` |
 
-**Guidelines:**
-- Only fill fields where the data clearly matches. Do not guess.
-- If a form field doesn't map to any available data, leave it blank and note it for the user.
-- Present the completed form to the user for review before finalizing.
-- If the form spans multiple properties, ask the user to clarify which property applies to each section.
+### 4c. Fill the PDF
+
+Build a JSON mapping of `{ "fieldName": "value" }` and run:
+
+```bash
+python "${CLAUDE_PLUGIN_ROOT}/scripts/fill_pdf.py" --fill /path/to/form.pdf /path/to/filled_form.pdf --data '{"FieldName1": "value1", "FieldName2": "value2"}'
+```
+
+For large mappings, write the JSON to a file first:
+
+```bash
+python "${CLAUDE_PLUGIN_ROOT}/scripts/fill_pdf.py" --fill /path/to/form.pdf /path/to/filled_form.pdf --data-file /tmp/mappings.json
+```
+
+### 4d. Return the filled PDF
+
+Give the user the filled PDF file. Tell them:
+- Which fields were filled and with what values
+- Which fields had no matching data available
+
+Ask the user to review the filled form for accuracy.
 
 ---
 
-## Tips
+## Rules
 
-1. **Upload the form first** — Provide the form as a PDF, image, or document so it can be analyzed.
-2. **Specify the property** — If you have multiple properties, mention which one the form is for.
-3. **Review before submitting** — Always review the filled fields for accuracy before using the form.
+- Only fill fields where the data clearly matches. Do not guess or fabricate values.
+- If the form needs data from multiple properties, ask the user to clarify which property applies to each section.
+- If the PDF has no fillable AcroForm fields (flat/scanned PDF), tell the user the form is not fillable electronically and present the data as formatted text so they can fill it in manually.
+- If additional data is needed beyond what the property query returns, use the MCP server's `search` and `introspect` tools to discover available fields, then `execute` to query them.

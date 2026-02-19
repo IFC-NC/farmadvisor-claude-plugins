@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "farmadvisor": {
+      "type": "http",
+      "url": "https://ai.farmadvisor.com/mcp"
+    }
+  }
+}

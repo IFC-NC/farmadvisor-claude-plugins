@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__claude_ai_FarmAdvisor__introspect",
+      "mcp__claude_ai_FarmAdvisor__search",
+      "mcp__claude_ai_FarmAdvisor__validate",
+      "WebSearch",
+      "WebFetch(domain:raw.githubusercontent.com)"
+    ]
+  }
+}
