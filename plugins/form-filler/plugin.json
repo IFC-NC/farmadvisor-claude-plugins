@@ -1,0 +1,23 @@
+{
+  "id": "form-filler",
+  "name": "Form Filler",
+  "version": "1.0.0",
+  "description": "Fills out agriculture-related forms using data from FarmAdvisor properties and organizations",
+  "author": "IFC-NC",
+  "homepage": "https://github.com/IFC-NC/farmadvisor-claude-plugins",
+  "repository": "https://github.com/IFC-NC/farmadvisor-claude-plugins",
+  "capabilities": [
+    "form-filling",
+    "organization-selection",
+    "property-data"
+  ],
+  "category": "agriculture",
+  "tags": [
+    "forms",
+    "agriculture",
+    "properties",
+    "organizations",
+    "data-entry"
+  ],
+  "mcpServer": "https://ai.farmadvisor.com/mcp"
+}

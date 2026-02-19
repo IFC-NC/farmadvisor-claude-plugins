@@ -5,5 +5,7 @@
   "author": "IFC-NC",
   "homepage": "https://github.com/IFC-NC/farmadvisor-claude-plugins",
   "mcpServer": "https://ai.farmadvisor.com/mcp",
-  "plugins": []
+  "plugins": [
+    "plugins/form-filler"
+  ]
 }
