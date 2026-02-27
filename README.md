@@ -1,101 +1,97 @@
 # FarmAdvisor Claude Plugins Marketplace
 
-Welcome to the FarmAdvisor Claude Plugins marketplace! This repository hosts a curated collection of Claude plugins specifically designed for agricultural and farm management applications.
+A curated collection of Claude plugins for agricultural and farm management applications. Each plugin connects Claude to the [FarmAdvisor](https://farmadvisor.com) platform via its MCP server, giving Claude access to live farm data — organizations, properties, files, GPS boundaries, acreage, and more.
 
-## 🌾 About
-
-This marketplace provides Claude AI plugins that help farmers, agricultural consultants, and farm management professionals leverage AI capabilities for:
-
-- Farm data analysis and insights
-- Weather forecasting and climate monitoring
-- Crop health monitoring and recommendations
-- Integration with farm management systems
-- Agricultural data processing and reporting
-
-## 📦 Available Plugins
-
-Browse the [plugins directory](./plugins) to discover available plugins. Each plugin includes:
-
-- Detailed documentation
-- Usage examples
-- Configuration instructions
-- API specifications
-
-All plugins in this marketplace use the FarmAdvisor MCP server at `https://ai.farmadvisor.com/mcp`.
-
-## 🚀 Using Plugins
-
-To use plugins from this marketplace in Claude:
-
-1. Browse the [plugins directory](./plugins) to find plugins that meet your needs
-2. Review the plugin's README for installation and configuration instructions
-3. Configure the plugin in your Claude environment
-4. Start using AI-powered agricultural insights!
-
-## 🤝 Contributing
-
-We welcome contributions from the community! If you've built a Claude plugin for agricultural applications, we'd love to include it in this marketplace.
-
-### How to Add Your Plugin
-
-1. Fork this repository
-2. Create your plugin in the `plugins/` directory
-3. Follow our [Contributing Guidelines](./CONTRIBUTING.md)
-4. Submit a pull request
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed instructions.
-
-## 📋 Plugin Requirements
-
-Plugins in this marketplace must:
-
-- Be relevant to agricultural/farm management use cases
-- Follow security best practices
-- Include comprehensive documentation
-- Provide clear usage examples
-- Use stable, versioned APIs
-
-## 📖 Marketplace Structure
-
-```
-farmadvisor-claude-plugins/
-├── marketplace.json          # Marketplace metadata
-├── plugins/                  # Plugin directory
-│   ├── example-plugin/      # Example plugin
-│   │   ├── plugin.json      # Plugin configuration
-│   │   ├── README.md        # Plugin documentation
-│   │   └── icon.png         # Plugin icon (optional)
-│   └── README.md            # Plugins directory guide
-├── CONTRIBUTING.md          # Contribution guidelines
-└── README.md               # This file
-```
-
-## 🔒 Security
-
-Security is a top priority. All plugins should:
-
-- Use HTTPS for all communications
-- Follow authentication best practices
-- Protect user data and privacy
-- Handle errors gracefully
-- Comply with relevant regulations
-
-If you discover a security vulnerability, please report it privately to the maintainers.
-
-## 📄 License
-
-See individual plugin directories for specific license information.
-
-## 💬 Support
-
-- **Issues**: Open an issue in this repository
-- **Discussions**: Use GitHub Discussions for questions and ideas
-- **Contributing**: See [CONTRIBUTING.md](./CONTRIBUTING.md)
-
-## 🌟 Featured Plugins
-
-Check back regularly as we add more plugins to help you get the most out of Claude for agricultural applications!
+**Owner**: IFC-NC | **License**: MIT | **MCP Server**: `https://ai.farmadvisor.com/mcp`
 
 ---
 
-[GitHub](https://github.com/IFC-NC/farmadvisor-claude-plugins)
+## Available Plugins
+
+### form-filler
+
+> Fill agriculture-related PDF forms automatically using your FarmAdvisor organization and property data.
+
+| | |
+|---|---|
+| Version | 1.0.0 |
+| Command | `/form-filler` |
+| Directory | [`form-filler/`](./form-filler/) |
+
+The form-filler plugin guides you through a 4-step interactive workflow:
+
+1. **Select organization** — loads your FarmAdvisor organizations
+2. **Select property** — lists properties for the chosen organization
+3. **Select form** — upload your own PDF or pick one stored in FarmAdvisor
+4. **Fill the form** — maps property data to PDF fields and returns the filled PDF
+
+See [form-filler/README.md](./form-filler/README.md) for full documentation.
+
+---
+
+## Repository Structure
+
+```
+farmadvisor_claude_plugins/
+├── .claude-plugin/
+│   └── marketplace.json      # Marketplace registry
+├── form-filler/              # form-filler plugin
+│   ├── .claude-plugin/
+│   │   └── plugin.json       # Plugin metadata
+│   ├── .mcp.json             # MCP server connection config
+│   ├── commands/
+│   │   └── form-filler.md    # /form-filler slash command
+│   ├── hooks/
+│   │   └── hooks.json        # SessionStart hook
+│   ├── scripts/
+│   │   └── fill_pdf.py       # PDF form utility (Python 3)
+│   └── skills/
+│       └── form-filling/
+│           └── SKILL.md      # Guided workflow + GraphQL queries
+├── CLAUDE.md                 # AI assistant instructions
+├── CONTRIBUTING.md           # Plugin submission guidelines
+├── LICENSE                   # MIT License
+└── README.md                 # This file
+```
+
+---
+
+## Using Plugins in Claude
+
+1. Open Claude Code (web or CLI)
+2. Connect to this repository
+3. Use the slash command for the plugin you want — e.g., `/form-filler`
+4. Follow the interactive prompts
+
+All plugins require the FarmAdvisor MCP server to be connected. The `.mcp.json` in each plugin directory handles this automatically.
+
+---
+
+## Contributing
+
+Contributions are welcome. If you've built a Claude plugin for an agricultural use case, we'd love to include it.
+
+**Quick checklist:**
+- Plugin directory at repo root (e.g., `my-plugin/`)
+- `.claude-plugin/plugin.json` with name, version, description, author
+- `.mcp.json` pointing to `https://ai.farmadvisor.com/mcp`
+- `README.md` inside the plugin directory
+- Entry added to `.claude-plugin/marketplace.json`
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full submission process.
+
+---
+
+## Security
+
+- All plugins communicate over HTTPS only
+- Files from FarmAdvisor are accessed via presigned URLs — no credentials in code
+- Claude permissions are scoped in `.claude/settings.local.json`
+
+Report security vulnerabilities privately to the maintainers via GitHub.
+
+---
+
+## License
+
+[MIT](./LICENSE) — © IFC-NC
